@@ -9,7 +9,6 @@
     </div> -->
 
     <div class="section">
-      <h2>veCRV "Backscratcher" Vault</h2>
       <veCurveVault />
     </div>
 

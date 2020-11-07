@@ -10,6 +10,7 @@
   "dependencies": {
     "@drizzle/store": "^1.5.0",
     "@drizzle/vue-plugin": "^0.1.0",
+    "ethers": "^5.0.19",
     "prettier": "^1.18.2",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.0.0",
