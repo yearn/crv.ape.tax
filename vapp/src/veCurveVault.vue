@@ -13,6 +13,7 @@
       //- div allowance: {{ crv_allowance | fromWei }} CRV
     p
       div 🧮 vault
+      div vault vs solo: {{ (yearn_vecrv / totalSupply).toFixed(3) }}x
       div total supply: {{ totalSupply | fromWei }} yveCRV ({{ totalSupply / total_vecrv | toPct }} of total)
       div yearn vecrv: {{ yearn_vecrv | fromWei }} veCRV ({{ yearn_vecrv / total_vecrv | toPct }} of total)
       div total vecrv: {{ total_vecrv | fromWei }} veCRV
