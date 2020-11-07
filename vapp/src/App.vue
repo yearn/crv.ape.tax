@@ -33,7 +33,7 @@ export default {
 
 <style>
 #app {
-  font-family: Menlo;
+  font-family: Menlo, Consolas, monospace;
   max-width: 600px;
   margin: auto;
   -webkit-font-smoothing: antialiased;
