@@ -9,14 +9,16 @@
       div token balance: {{ crv_balance | fromWei }} CRV
       div vault balance: {{ vault_balance | fromWei }} yveCRV
       div claimable: {{ claimable | fromWei }} 3pool
-      div allowance: {{ crv_allowance | fromWei }} CRV
-      p 
-        button(:disabled='has_allowance', @click.prevent='on_approve') {{ has_allowance ? 'approved' : 'approve' }}
+      //- div allowance: {{ crv_allowance | fromWei }} CRV
     p
       div 🧮 vault
       div total supply: {{ totalSupply | fromWei }} yveCRV ({{ totalSupply / total_vecrv | toPct }} of total)
       div yearn vecrv: {{ yearn_vecrv | fromWei }} veCRV ({{ yearn_vecrv / total_vecrv | toPct }} of total)
       div total vecrv: {{ total_vecrv | fromWei }} veCRV
+    p.row
+      button(:disabled='has_allowance', @click.prevent='on_approve') {{ has_allowance ? 'approved' : 'approve vault' }}
+      button(:disabled='!has_allowance', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei }} CRV
+      button(@click.prevent='on_claim') claim {{ claimable | fromWei }} rewards
 </template>
 
 <script>
@@ -46,6 +48,12 @@ export default {
       let max_uint = new ethers.BigNumber.from(2).pow(256).sub(1).toString()
       let args = [this.drizzleInstance.contracts['veCurveVault'].address, max_uint, {from: this.activeAccount}]
       this.drizzleInstance.contracts['CRV'].methods['approve'].cacheSend(...args)
+    },
+    on_deposit() {
+      this.drizzleInstance.contracts['veCurveVault'].methods['depositAll'].cacheSend({from: this.activeAccount})
+    },
+    on_claim() {
+      this.drizzleInstance.contracts['veCurveVault'].methods['claim'].cacheSend({from: this.activeAccount})
     },
   },
   computed: {
@@ -93,11 +101,12 @@ export default {
     this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'veCurveVault', method: 'claimable', methodArgs: [this.activeAccount]})
     this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CurveVotingEscrow', method: 'balanceOf', methodArgs: [this.drizzleInstance.contracts['CurveYCRVVoter'].address]})
     this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CurveVotingEscrow', method: 'totalSupply', methodArgs: []})
-    
-
-
   }
 }
 </script>
 
-<style></style>
+<style>
+.row > button {
+  margin-right: 1em;
+}
+</style>
