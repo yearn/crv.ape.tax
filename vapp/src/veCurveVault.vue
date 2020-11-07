@@ -4,6 +4,7 @@
       h2 veCRV "Backscratcher" Vault
       p This vault accepts CRV in exchange for perpetual claim on Curve DAO admin fees across all Yearn products.
       p Since it locks CRV in Curve Voting Escrow for 4 years and regularly prolongs the lock, this vault doesn't have withdrawal functionality.
+      p <strong>You will NOT get your CRV back. Ever.</strong>
     p
       div 🦍 user
       div token balance: {{ crv_balance | fromWei }} CRV
