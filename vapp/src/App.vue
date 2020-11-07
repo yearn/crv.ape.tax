@@ -1,43 +1,31 @@
 <template>
   <div v-if="isDrizzleInitialized" id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
+    <div class="logo">
+      🦍 🧮
+    </div>
 
-    <div class="section">
-      <h2>Show the Accounts</h2>
+    <!-- <div class="section">
       <drizzle-account units="Ether" :precision="2" />
-    </div>
+    </div> -->
 
     <div class="section">
-      <h2>Tutorial Token</h2>
-      <TutorialToken />
+      <h2>veCRV "Backscratcher" Vault</h2>
+      <veCurveVault />
     </div>
 
-    <div class="section">
-      <h2>Simple Storage</h2>
-      <SimpleStorage />
-    </div>
-
-    <div class="section">
-      <h2>Complex Storage</h2>
-      <ComplexStorage />
-    </div>
   </div>
 
   <div v-else>Loading...</div>
 </template>
 
 <script>
-import TutorialToken from './TutorialToken'
-import SimpleStorage from './SimpleStorage'
-import ComplexStorage from './ComplexStorage'
+import veCurveVault from './veCurveVault'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
   components: {
-    ComplexStorage,
-    TutorialToken,
-    SimpleStorage
+    veCurveVault,
   },
 
   computed: mapGetters('drizzle', ['isDrizzleInitialized'])
@@ -46,11 +34,23 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: Menlo;
+  max-width: 600px;
+  margin: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.logo {
+  font-size: 32px;
+  margin-bottom: .8em;
+  font-family: sans-serif;
+}
+
+h2 {
+  font-weight: normal;
 }
 </style>
