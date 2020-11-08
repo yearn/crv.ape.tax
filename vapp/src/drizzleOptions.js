@@ -5,6 +5,8 @@ import CurveVesting from './abi/CurveVesting.json'
 import CurveYCRVVoter from './abi/CurveYCRVVoter.json'
 import StrategyProxy from './abi/StrategyProxy.json'
 import CurveBackzapper from './abi/CurveBackzapper.json'
+import CurveRegistry from './abi/CurveRegistry.json'
+import CurveMinter from './abi/CurveMinter.json'
 
 import Web3 from 'web3'
 let web3 = new Web3(Web3.givenProvider);
@@ -42,6 +44,14 @@ const options = {
     {
       contractName: 'CurveBackzapper',
       web3Contract: new web3.eth.Contract(CurveBackzapper, "0x5249dD8DB02EeFB08600C4A70110B0f6B9CDA3cA")
+    },
+    {
+      contractName: 'CurveRegistry',
+      web3Contract: new web3.eth.Contract(CurveRegistry, "0x7D86446dDb609eD0F5f8684AcF30380a356b2B4c")
+    },
+    {
+      contractName: 'CurveMinter',
+      web3Contract: new web3.eth.Contract(CurveMinter, "0xd061D61a4d941c39E5453435B6345Dc261C2fcE0")
     },
   ],
   events: {
