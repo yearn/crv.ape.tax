@@ -9,6 +9,7 @@
       div 🦍 user
       div wallet balance: {{ crv_balance | fromWei(2) }} CRV
       div vested balance: {{ vested_balance | fromWei(2) }} CRV
+      div gauges claimable: {{ gauge_balance | fromWei(2) }} CRV
       div vault balance: {{ vault_balance | fromWei(2) }} yveCRV
       div claimable: {{ claimable | fromWei(2) }} 3pool
       //- div allowance: {{ crv_allowance | fromWei(2) }} CRV
@@ -24,13 +25,15 @@
       button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} rewards
     p.row
       button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'zap approved' : 'approve zap' }}
-      button(:disabled='!has_allowance_zap', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
+      button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
+      button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
     p.row
       div.muted
-        div vault built by 
+        div vault by 
           a(href='https://twitter.com/andrecronjetech', target='_blank') andre
-          span , ui built by 
+          span , ui by 
           a(href='https://twitter.com/bantg', target='_blank') banteg
+          span , zap by banteg and kx9x
         div
           a(href='https://github.com/banteg/ape-tax', target='_blank') source code
           span , 
@@ -41,11 +44,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import ethers from 'ethers'
+import ethers, { BigNumber } from 'ethers'
+import CurveGauge from './abi/CurveGauge.json'
 const max_uint = new ethers.BigNumber.from(2).pow(256).sub(1).toString()
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export default {
   name: 'veCurveVault',
+  data() {
+    return {
+      user_gauges: [],
+      gauge_balance: 0,
+    }
+  },
   filters: {
     fromWei(data, precision) {
       if (data === 'loading') return data
@@ -66,21 +77,59 @@ export default {
     on_approve_zap() {
       this.drizzleInstance.contracts['CRV'].methods['approve'].cacheSend(this.zap, max_uint, {from: this.activeAccount})
     },
+    on_approve_minter() {
+      this.drizzleInstance.contracts['CurveMinter'].methods['toggle_approve_mint'].cacheSend(this.zap, {from: this.activeAccount})
+    },
     on_deposit() {
       this.drizzleInstance.contracts['veCurveVault'].methods['depositAll'].cacheSend({from: this.activeAccount})
     },
     on_zap() {
-      this.drizzleInstance.contracts['CurveBackzapper'].methods['zap'].cacheSend({from: this.activeAccount})
+      this.drizzleInstance.contracts['CurveBackzapper'].methods['zap'].cacheSend(this.user_gauges, {from: this.activeAccount})
     },
     on_claim() {
       this.drizzleInstance.contracts['veCurveVault'].methods['claim'].cacheSend({from: this.activeAccount})
     },
-    call(contract, method, args) {
+
+    async load_user_gauges() {
+      let pool_count = await this.drizzleInstance.contracts['CurveRegistry'].methods['pool_count']().call()
+      let pools = await Promise.all([...Array(parseInt(pool_count)).keys()].map(
+        i => this.drizzleInstance.contracts['CurveRegistry'].methods['pool_list'](i).call()
+      ))
+      let resp = await Promise.all(pools.map(
+        pool => this.drizzleInstance.contracts['CurveRegistry'].methods['get_gauges'](pool).call()
+      ))
+      let gauges = []
+      for (let x of resp) gauges.push(...x[0])
+      gauges = gauges.filter(gauge => gauge !== ZERO_ADDRESS)
+      let balances = await Promise.all(gauges.map(this.gague_claimable))
+      let user_gauges = gauges.filter((gauge, i) => balances[i].gt(0))
+      while (user_gauges.length < 20) user_gauges.push(ZERO_ADDRESS)
+      this.gauge_balance = balances.reduce((prev, curr) => curr.add(prev))
+      this.user_gauges = user_gauges
+    },
+
+    async gague_claimable(gauge) {
+      let contract = new this.drizzleInstance.web3.eth.Contract(CurveGauge, gauge)
+      let balance = await contract.methods.claimable_tokens(this.activeAccount).call()
+      return new ethers.BigNumber.from(balance)
+    },
+
+    call(contract, method, args, out='number') {
       let key = this.drizzleInstance.contracts[contract].methods[method].cacheCall(...args)
+      let value
       try {
-        return new ethers.BigNumber.from(this.contractInstances[contract][method][key].value)
+        value = this.contractInstances[contract][method][key].value 
       } catch (error) {
-        return new ethers.BigNumber.from(0)
+        value = null
+      }
+      switch (out) {
+        case 'number':
+          if (value === null) value = 0
+          return new ethers.BigNumber.from(value)
+        case 'address':
+          return value
+        default:
+          return value
       }
     },
   },
@@ -111,7 +160,7 @@ export default {
       return this.call('CurveVesting', 'balanceOf', [this.activeAccount])
     },
     zap_balance() {
-      return this.crv_balance.add(this.vested_balance)
+      return this.crv_balance.add(this.vested_balance).add(this.gauge_balance)
     },
     crv_allowance() {
       return this.call('CRV', 'allowance', [this.activeAccount, this.vault])
@@ -134,7 +183,16 @@ export default {
     has_allowance_zap() {
       return !this.call('CRV', 'allowance', [this.activeAccount, this.zap]).isZero()
     },
+    need_minter() {
+      return this.user_gauges.filter(gauge => gauge !== ZERO_ADDRESS).length > 0
+    },
+    minting_allowed() {
+      return this.call('CurveMinter', 'allowed_to_mint_for', [this.zap, this.activeAccount], 'object')
+    },
   },
+  created() {
+    this.load_user_gauges()
+  }
 }
 </script>
 
