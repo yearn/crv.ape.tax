@@ -12,10 +12,6 @@ let web3 = new Web3(Web3.givenProvider);
 const options = {
   web3: {
     block: false,
-    fallback: {
-      type: 'ws',
-      url: 'ws://127.0.0.1:9545'
-    }
   },
   syncAlways: true,
   contracts: [
