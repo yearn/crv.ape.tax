@@ -40,7 +40,9 @@ def gauges(interface, user):
     gauges = set(chain.from_iterable([registry.get_gauges(pool)[0] for pool in pools]))
     gauges.discard(ZERO_ADDRESS)
     user_gauges = [
-        gauge for gauge in gauges if interface.CurveGauge(gauge).balanceOf(user) > 0
+        gauge
+        for gauge in gauges
+        if interface.CurveGauge(gauge).claimable_tokens.call(user) > 0
     ]
     user_gauges += [ZERO_ADDRESS for _ in range(20 - len(user_gauges))]
     return user_gauges[:20]

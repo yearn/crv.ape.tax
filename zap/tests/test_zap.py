@@ -7,3 +7,4 @@ def test_zap(zap, user, crv, vesting, vault, minter, gauges):
     assert vault.balanceOf(user) > before
     assert crv.balanceOf(user) == 0
     assert vesting.balanceOf(user) == 0
+    assert crv.balanceOf(zap) == 0
