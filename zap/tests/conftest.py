@@ -1,5 +1,5 @@
 import pytest
-from brownie import interface
+from itertools import chain
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -33,23 +33,17 @@ def minter(interface):
 
 
 @pytest.fixture
-def gauges(interface):
+def gauges(interface, user):
+    ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
     registry = interface.CurveRegistry("0x7D86446dDb609eD0F5f8684AcF30380a356b2B4c")
-
-    pool_count = registry.pool_count()
-    pools = []
-    for i in range(pool_count):
-        pools.append(registry.pool_list(i))
-    
-    gauges = []
-    for pool in pools:
-        gauges_found = registry.get_gauges(pool)
-        for gauge in list(gauges_found[0]):
-            if gauge != '0x0000000000000000000000000000000000000000':
-                gauges.append(gauge)
-
-    gauges += ['0x0000000000000000000000000000000000000000' for _ in range(20 - len(gauges))]
-    return gauges
+    pools = [registry.pool_list(i) for i in range(registry.pool_count())]
+    gauges = set(chain.from_iterable([registry.get_gauges(pool)[0] for pool in pools]))
+    gauges.discard(ZERO_ADDRESS)
+    user_gauges = [
+        gauge for gauge in gauges if interface.CurveGauge(gauge).balanceOf(user) > 0
+    ]
+    user_gauges += [ZERO_ADDRESS for _ in range(20 - len(user_gauges))]
+    return user_gauges[:20]
 
 
 @pytest.fixture
