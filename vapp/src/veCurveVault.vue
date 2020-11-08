@@ -40,6 +40,8 @@
           a(:href='`https://etherscan.io/address/${vault}/#code`', target='_blank') vault contract
           span , 
           a(:href='"https://etherscan.io/address/" + zap + "/#code"', target='_blank') zap contract
+          span , 
+          a(href='#', @click.prevent='on_add_token') add token
 </template>
 
 <script>
@@ -88,6 +90,19 @@ export default {
     },
     on_claim() {
       this.drizzleInstance.contracts['veCurveVault'].methods['claim'].cacheSend({from: this.activeAccount})
+    },
+    on_add_token() {
+      ethereum.request({
+        method: 'wallet_watchAsset',
+            params: {
+              'type': 'ERC20',
+              'options': {
+                'address': this.vault,
+                'symbol': 'yveCRV',
+                'decimals': 18,
+              },
+            }
+        })
     },
 
     async load_user_gauges() {
