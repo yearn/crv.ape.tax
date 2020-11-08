@@ -4,7 +4,7 @@ import CurveVotingEscrow from './abi/CurveVotingEscrow.json'
 import CurveVesting from './abi/CurveVesting.json'
 import CurveYCRVVoter from './abi/CurveYCRVVoter.json'
 import StrategyProxy from './abi/StrategyProxy.json'
-import CurveVestingBackscratch from './abi/CurveVestingBackscratch.json'
+import CurveBackzapper from './abi/CurveBackzapper.json'
 
 import Web3 from 'web3'
 let web3 = new Web3(Web3.givenProvider);
@@ -40,8 +40,8 @@ const options = {
       web3Contract: new web3.eth.Contract(CurveYCRVVoter, "0xF147b8125d2ef93FB6965Db97D6746952a133934")
     },
     {
-      contractName: 'CurveVestingBackscratch',
-      web3Contract: new web3.eth.Contract(CurveVestingBackscratch, "0xBf85BbC54E5107B47FE8c7eD8D8D9f4020fe706e")
+      contractName: 'CurveBackzapper',
+      web3Contract: new web3.eth.Contract(CurveBackzapper, "0x5249dD8DB02EeFB08600C4A70110B0f6B9CDA3cA")
     },
   ],
   events: {

@@ -70,7 +70,7 @@ export default {
       this.drizzleInstance.contracts['veCurveVault'].methods['depositAll'].cacheSend({from: this.activeAccount})
     },
     on_zap() {
-      this.drizzleInstance.contracts['CurveVestingBackscratch'].methods['zap'].cacheSend({from: this.activeAccount})
+      this.drizzleInstance.contracts['CurveBackzapper'].methods['zap'].cacheSend({from: this.activeAccount})
     },
     on_claim() {
       this.drizzleInstance.contracts['veCurveVault'].methods['claim'].cacheSend({from: this.activeAccount})
@@ -96,7 +96,7 @@ export default {
       return this.drizzleInstance.contracts['veCurveVault'].address
     },
     zap() {
-      return this.drizzleInstance.contracts['CurveVestingBackscratch'].address
+      return this.drizzleInstance.contracts['CurveBackzapper'].address
     },
     voter() {
       return this.drizzleInstance.contracts['CurveYCRVVoter'].address

@@ -1,4 +1,5 @@
 import pytest
+from brownie import interface
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -27,5 +28,30 @@ def vesting(interface):
 
 
 @pytest.fixture
-def zap(accounts, CurveVestingBackscratch):
-    return CurveVestingBackscratch.deploy({"from": accounts[0]})
+def minter(interface):
+    return interface.CurveMinter("0xd061D61a4d941c39E5453435B6345Dc261C2fcE0")
+
+
+@pytest.fixture
+def gauges(interface):
+    registry = interface.CurveRegistry("0x7D86446dDb609eD0F5f8684AcF30380a356b2B4c")
+
+    pool_count = registry.pool_count()
+    pools = []
+    for i in range(pool_count):
+        pools.append(registry.pool_list(i))
+    
+    gauges = []
+    for pool in pools:
+        gauges_found = registry.get_gauges(pool)
+        for gauge in list(gauges_found[0]):
+            if gauge != '0x0000000000000000000000000000000000000000':
+                gauges.append(gauge)
+
+    gauges += ['0x0000000000000000000000000000000000000000' for _ in range(20 - len(gauges))]
+    return gauges
+
+
+@pytest.fixture
+def zap(accounts, CurveBackzapper):
+    return CurveBackzapper.deploy({"from": accounts[0]})
