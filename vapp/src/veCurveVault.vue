@@ -33,6 +33,10 @@
           a(href='https://twitter.com/bantg', target='_blank') banteg
         div
           a(href='https://github.com/banteg/ape-tax', target='_blank') source code
+          span , 
+          a(:href='`https://etherscan.io/address/${vault}/#code`', target='_blank') vault contract
+          span , 
+          a(:href='"https://etherscan.io/address/" + zap + "/#code"', target='_blank') zap contract
 </template>
 
 <script>
