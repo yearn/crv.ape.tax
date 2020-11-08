@@ -7,42 +7,42 @@
       p <strong>You will NOT get your CRV back. Ever.</strong>
     p
       div 🦍 user
-      div token balance: {{ crv_balance | fromWei }} CRV
-      div vault balance: {{ vault_balance | fromWei }} yveCRV
-      div claimable: {{ claimable | fromWei }} 3pool
-      //- div allowance: {{ crv_allowance | fromWei }} CRV
+      div token balance: {{ crv_balance | fromWei(2) }} CRV
+      div vault balance: {{ vault_balance | fromWei(2) }} yveCRV
+      div claimable: {{ claimable | fromWei(2) }} 3pool
+      //- div allowance: {{ crv_allowance | fromWei(2) }} CRV
     p
       div 🧮 vault
       div vault vs solo: {{ (yearn_vecrv / totalSupply).toFixed(3) }}x
-      div total supply: {{ totalSupply | fromWei }} yveCRV ({{ totalSupply / total_vecrv | toPct }} of total)
-      div yearn vecrv: {{ yearn_vecrv | fromWei }} veCRV ({{ yearn_vecrv / total_vecrv | toPct }} of total)
-      div total vecrv: {{ total_vecrv | fromWei }} veCRV
+      div total supply: {{ totalSupply | fromWei(2) }} yveCRV ({{ totalSupply / total_vecrv | toPct(3) }} of total)
+      div yearn vecrv: {{ yearn_vecrv | fromWei(2) }} veCRV ({{ yearn_vecrv / total_vecrv | toPct(3) }} of total)
+      div total vecrv: {{ total_vecrv | fromWei(2) }} veCRV
     p.row
       button(:disabled='has_allowance', @click.prevent='on_approve') {{ has_allowance ? 'approved' : 'approve vault' }}
-      button(:disabled='!has_allowance', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei }} CRV
-      button(@click.prevent='on_claim') claim {{ claimable | fromWei }} rewards
+      button(:disabled='!has_allowance', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
+      button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} rewards
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Web3 from 'web3'
+// import Web3 from 'web3'
 import ethers from 'ethers'
 
-let web3 = new Web3(Web3.givenProvider);
+// let web3 = new Web3(Web3.givenProvider);
 
 export default {
   name: 'veCurveVault',
   filters: {
-    fromWei(data) {
+    fromWei(data, precision) {
       if (data === 'loading') return data
       if (data > 2**255) return '∞'
       let value = ethers.utils.commify(ethers.utils.formatEther(data))
       let parts = value.split('.')
-      return parts[0] + '.' + parts[1].slice(0, 2)
+      return parts[0] + '.' + parts[1].slice(0, precision)
     },
-    toPct(data) {
+    toPct(data, precision) {
       if (isNaN(data)) return '?'
-      return `${(data * 100).toFixed(2)}%`
+      return `${(data * 100).toFixed(precision)}%`
     }
   },
   methods: {
