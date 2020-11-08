@@ -25,6 +25,14 @@
     p.row
       button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'zap approved' : 'approve zap' }}
       button(:disabled='!has_allowance_zap', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
+    p.row
+      div.muted
+        div vault built by 
+          a(href='https://twitter.com/andrecronjetech', target='_blank') andre
+          span , ui built by 
+          a(href='https://twitter.com/bantg', target='_blank') banteg
+        div
+          a(href='https://github.com/banteg/ape-tax', target='_blank') source code
 </template>
 
 <script>
@@ -129,5 +137,12 @@ export default {
 <style>
 .row > button {
   margin-right: 1em;
+}
+.muted {
+  color: gray;
+  font-size: 0.8em;
+}
+a:visited, a:hover {
+  color: gray;
 }
 </style>
