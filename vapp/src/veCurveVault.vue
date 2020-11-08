@@ -142,7 +142,7 @@ export default {
   color: gray;
   font-size: 0.8em;
 }
-a:visited, a:hover {
+a, a:visited, a:hover {
   color: gray;
 }
 </style>
