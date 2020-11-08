@@ -1,6 +1,7 @@
 import ERC20 from './abi/ERC20.json'
 import veCurveVault from './abi/veCurveVault.json'
 import CurveVotingEscrow from './abi/CurveVotingEscrow.json'
+import CurveVesting from './abi/CurveVesting.json'
 import CurveYCRVVoter from './abi/CurveYCRVVoter.json'
 import StrategyProxy from './abi/StrategyProxy.json'
 
@@ -27,6 +28,10 @@ const options = {
     {
       contractName: 'CurveVotingEscrow',
       web3Contract: new web3.eth.Contract(CurveVotingEscrow, "0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2")
+    },
+    {
+      contractName: 'CurveVesting',
+      web3Contract: new web3.eth.Contract(CurveVesting, "0x575CCD8e2D300e2377B43478339E364000318E2c")
     },
     {
       contractName: 'StrategyProxy',
