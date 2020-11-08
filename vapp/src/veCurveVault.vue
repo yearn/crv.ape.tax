@@ -123,17 +123,6 @@ export default {
       return !this.call('CRV', 'allowance', [this.activeAccount, this.zap]).isZero()
     },
   },
-  created() {
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'veCurveVault', method: 'totalSupply', methodArgs: []}),
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CRV', method: 'balanceOf', methodArgs: [this.activeAccount]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CurveVesting', method: 'balanceOf', methodArgs: [this.activeAccount]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CRV', method: 'allowance', methodArgs: [this.activeAccount, this.vault]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CRV', method: 'allowance', methodArgs: [this.activeAccount, this.zap]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'veCurveVault', method: 'balanceOf', methodArgs: [this.activeAccount]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'veCurveVault', method: 'claimable', methodArgs: [this.activeAccount]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CurveVotingEscrow', method: 'balanceOf', methodArgs: [this.voter]})
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {contractName: 'CurveVotingEscrow', method: 'totalSupply', methodArgs: []})
-  }
 }
 </script>
 
