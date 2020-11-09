@@ -11,7 +11,7 @@
       div vested balance: {{ vested_balance | fromWei(2) }} CRV
       div gauges claimable: {{ gauge_balance | fromWei(2) }} CRV
       div vault balance: {{ vault_balance | fromWei(2) }} yveCRV
-      div claimable: {{ claimable | fromWei(2) }} 3pool
+      div claimable: {{ claimable | fromWei(2) }} 3Crv
       //- div allowance: {{ crv_allowance | fromWei(2) }} CRV
     p
       div 🧮 vault
@@ -19,38 +19,36 @@
       div total supply: {{ vault_supply | fromWei(2) }} yveCRV ({{ vault_supply / total_vecrv | toPct(3) }} of total)
       div yearn vecrv: {{ yearn_vecrv | fromWei(2) }} veCRV ({{ yearn_vecrv / total_vecrv | toPct(3) }} of total)
       div total vecrv: {{ total_vecrv | fromWei(2) }} veCRV
-    p.row
+    p
+      div 🕹 interact
+      p.muted deposit CRV into yveCRV vault
       button(:disabled='has_allowance_vault', @click.prevent='on_approve_vault') {{ has_allowance_vault ? 'vault approved' : 'approve vault' }}
       button(:disabled='!has_allowance_vault', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
       button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} rewards
     p.row
-      button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? 'zap approved' : 'approve zap' }}
-      button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ claimable | fromWei(2) }} rewards
-      dev.muted
-        div Deposits pending rewards into the 
-          a(href='https://yearn.finance/vaults', target='_blank') yearn
-          span  3crv vault
-    p.row
-      button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'zap approved' : 'approve zap' }}
+      p.muted deposit CRV from wallet, vesting and gauges into yveCRV vault
+      button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'crv zap approved' : 'approve crv zap' }}
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
       button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
-      dev.muted
-        div Claims pending CRV rewards and deposits into the veCRV "Backscratcher" vault
+    p.row
+      p.muted claim 3Crv rewards and deposit them into y3Crv vault
+      button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? '3Crv zap approved' : 'approve 3Crv zap' }}
+      button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ claimable | fromWei(2) }} rewards
     p.row
       div.muted
         div vault by 
           a(href='https://twitter.com/andrecronjetech', target='_blank') andre
           span , ui by 
           a(href='https://twitter.com/bantg', target='_blank') banteg
-          span , zap by banteg and kx9x
+          span , zaps by banteg and kx9x
         div
-          a(href='https://github.com/banteg/ape-tax', target='_blank') source code
-          span , 
           a(:href='`https://etherscan.io/address/${vault}/#code`', target='_blank') vault contract
           span , 
           a(:href='"https://etherscan.io/address/" + zap + "/#code"', target='_blank') zap deposit contract
           span , 
           a(:href='"https://etherscan.io/address/" + y3crv_zap + "/#code"', target='_blank') zap rewards contract
+        div
+          a(href='https://github.com/banteg/ape-tax', target='_blank') source code
           span , 
           a(href='#', @click.prevent='on_add_token') add token
 </template>
@@ -235,7 +233,7 @@ export default {
 </script>
 
 <style>
-.row > button {
+button {
   margin-right: 1em;
 }
 .muted {
