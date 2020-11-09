@@ -21,6 +21,7 @@
       div total vecrv: {{ total_vecrv | fromWei(2) }} veCRV
     p
       div 🕹 interact
+      div account: {{ username || activeAccount }}
       p.muted deposit CRV into yveCRV vault
       button(:disabled='has_allowance_vault', @click.prevent='on_approve_vault') {{ has_allowance_vault ? 'vault approved' : 'approve vault' }}
       button(:disabled='!has_allowance_vault', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
@@ -66,6 +67,7 @@ export default {
     return {
       user_gauges: [],
       gauge_balance: 0,
+      username: null,
     }
   },
   filters: {
@@ -136,6 +138,13 @@ export default {
       while (user_gauges.length < 20) user_gauges.push(ZERO_ADDRESS)
       this.gauge_balance = balances.reduce((prev, curr) => curr.add(prev))
       this.user_gauges = user_gauges
+    },
+
+    async load_reverse_ens() {
+      let lookup = this.activeAccount.toLowerCase().substr(2) + '.addr.reverse'
+      let resolver = await this.drizzleInstance.web3.eth.ens.resolver(lookup)
+      let namehash = ethers.utils.namehash(lookup)
+      this.username = await resolver.methods.name(namehash).call()
     },
 
     async gague_claimable(gauge) {
@@ -228,6 +237,7 @@ export default {
   },
   created() {
     this.load_user_gauges()
+    this.load_reverse_ens()
   }
 }
 </script>
