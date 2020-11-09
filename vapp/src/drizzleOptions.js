@@ -52,7 +52,7 @@ const options = {
     },
     {
       contractName: 'y3CrvZapper',
-      web3Contract: new web3.eth.Contract(y3CrvZapper, "0x24A86C6399e07b2c5137960C5819566695ffB0a5")
+      web3Contract: new web3.eth.Contract(y3CrvZapper, "0x5B8F5efD2524a0D2DC9d64CE8F53c82cB5656407")
     },
     {
       contractName: 'CurveRegistry',

@@ -22,19 +22,19 @@
     p
       div 🕹 interact
       div account: {{ username || activeAccount }}
-      p.muted deposit CRV into yveCRV vault
+      p.muted deposit CRV from wallet into yveCRV vault
       button(:disabled='has_allowance_vault', @click.prevent='on_approve_vault') {{ has_allowance_vault ? 'vault approved' : 'approve vault' }}
       button(:disabled='!has_allowance_vault', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
       button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} rewards
     p.row
       p.muted deposit CRV from wallet, vesting and gauges into yveCRV vault
-      button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'crv zap approved' : 'approve crv zap' }}
+      button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'CRV zap approved' : 'approve CRV zap' }}
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
       button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
     p.row
-      p.muted claim 3Crv rewards and deposit them into y3Crv vault
+      p.muted deposit 3Crv from wallet and claimable rewards into y3Crv vault
       button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? '3Crv zap approved' : 'approve 3Crv zap' }}
-      button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ claimable | fromWei(2) }} rewards
+      button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ three_crv_zappable | fromWei(2) }} 3Crv
     p.row
       div.muted
         div vault by 
@@ -198,6 +198,9 @@ export default {
     crv_balance() {
       return this.call('CRV', 'balanceOf', [this.activeAccount])
     },
+    three_crv_balance() {
+      return this.call('3CRV', 'balanceOf', [this.activeAccount])
+    },
     vested_balance() {
       return this.call('CurveVesting', 'balanceOf', [this.activeAccount])
     },
@@ -212,6 +215,9 @@ export default {
     },
     claimable() {
       return this.call('veCurveVault', 'claimable', [this.activeAccount])
+    },
+    three_crv_zappable() {
+      return this.three_crv_balance.add(this.claimable)
     },
     yearn_vecrv() {
       return this.call('CurveVotingEscrow', 'balanceOf', [this.voter])
