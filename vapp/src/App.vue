@@ -24,7 +24,7 @@ export default {
 
 <style>
 #app {
-  font-family: Menlo, Consolas, monospace;
+  font-family: Menlo, Comic Sans MS, monospace;
   max-width: 600px;
   margin: auto;
   -webkit-font-smoothing: antialiased;
