@@ -1,6 +1,7 @@
 import pytest
 from itertools import chain
 
+
 @pytest.fixture(scope="function", autouse=True)
 def shared_setup(fn_isolation):
     pass
@@ -17,12 +18,12 @@ def crv(interface):
 
 
 @pytest.fixture
-def three_crv(interface):
+def lp_3crv(interface):
     return interface.ERC20("0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490")
 
 
 @pytest.fixture
-def three_crv_vault(interface):
+def y3crv(interface):
     return interface.yVault("0x9cA85572E6A3EbF24dEDd195623F188735A5179f")
 
 
@@ -63,5 +64,5 @@ def backzapper(accounts, CurveBackzapper):
 
 
 @pytest.fixture
-def three_crv_zapper(accounts, y3CrvZapper):
+def zap_3crv(accounts, y3CrvZapper):
     return y3CrvZapper.deploy({"from": accounts[0]})
