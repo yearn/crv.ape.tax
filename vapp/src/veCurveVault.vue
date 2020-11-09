@@ -35,7 +35,7 @@
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
       button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
       dev.muted
-        div Claims pending CRV rewards and deposits into the veCRV "Backscratcher" Vault
+        div Claims pending CRV rewards and deposits into the veCRV "Backscratcher" vault
     p.row
       div.muted
         div vault by 
