@@ -24,7 +24,9 @@ def __init__():
 
 @external
 def zap():
+    before: uint256 = self.threeCrv.balanceOf(msg.sender)
     self.vecrvVault.claimFor(msg.sender)
-    self.threeCrv.transferFrom(msg.sender, self, self.threeCrv.balanceOf(msg.sender))
+    after: uint256 = self.threeCrv.balanceOf(msg.sender)
+    self.threeCrv.transferFrom(msg.sender, self, after - before)
     self.threeCrvVault.deposit(self.threeCrv.balanceOf(self))
     self.threeCrvVault.transfer(msg.sender, self.threeCrvVault.balanceOf(self))
