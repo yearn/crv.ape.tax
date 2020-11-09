@@ -1,6 +1,6 @@
 import pytest
 from itertools import chain
-
+from brownie import accounts, y3CrvZapper, CurveBackzapper
 
 @pytest.fixture(scope="function", autouse=True)
 def shared_setup(fn_isolation):
@@ -15,6 +15,16 @@ def user(accounts):
 @pytest.fixture
 def crv(interface):
     return interface.ERC20("0xD533a949740bb3306d119CC777fa900bA034cd52")
+
+
+@pytest.fixture
+def three_crv(interface):
+    return interface.ERC20("0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490")
+
+
+@pytest.fixture
+def three_crv_vault(interface):
+    return interface.yVault("0x9cA85572E6A3EbF24dEDd195623F188735A5179f")
 
 
 @pytest.fixture
@@ -49,5 +59,10 @@ def gauges(interface, user):
 
 
 @pytest.fixture
-def zap(accounts, CurveBackzapper):
+def backzapper(accounts, CurveBackzapper):
     return CurveBackzapper.deploy({"from": accounts[0]})
+
+
+@pytest.fixture
+def three_crv_zapper(accounts, y3CrvZapper):
+    return y3CrvZapper.deploy({"from": accounts[0]})
