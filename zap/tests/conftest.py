@@ -1,6 +1,5 @@
 import pytest
 from itertools import chain
-from brownie import accounts, y3CrvZapper, CurveBackzapper
 
 @pytest.fixture(scope="function", autouse=True)
 def shared_setup(fn_isolation):
