@@ -211,7 +211,7 @@ export default {
       return !this.call('CRV', 'allowance', [this.activeAccount, this.zap]).isZero()
     },
     has_allowance_y3crv_zap() {
-      return !this.call('3CRV', 'allowance', [this.activeAccount, this.zap]).isZero()
+      return !this.call('3CRV', 'allowance', [this.activeAccount, this.y3crv_zap]).isZero()
     },
     need_minter() {
       return this.user_gauges.filter(gauge => gauge !== ZERO_ADDRESS).length > 0
