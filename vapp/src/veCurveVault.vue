@@ -24,9 +24,12 @@
       button(:disabled='!has_allowance_vault', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
       button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} rewards
     p.row
+      button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? 'y3crv zap approved' : 'approve y3crv zap' }}
+      button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ claimable | fromWei(2) }} rewards to y3crv vault
+    p.row
       button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'zap approved' : 'approve zap' }}
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
-      button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
+      button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV to Backscratcher
     p.row
       div.muted
         div vault by 
@@ -87,6 +90,12 @@ export default {
     },
     on_zap() {
       this.drizzleInstance.contracts['CurveBackzapper'].methods['zap'].cacheSend(this.user_gauges, {from: this.activeAccount})
+    },
+    on_approve_y3crv_zap() {
+      this.drizzleInstance.contracts['3CRV'].methods['approve'].cacheSend(this.y3crv_zap, max_uint, {from: this.activeAccount})
+    },
+    on_y3crv_zap() {
+      this.drizzleInstance.contracts['y3CrvZapper'].methods['zap'].cacheSend({from: this.activeAccount})
     },
     on_claim() {
       this.drizzleInstance.contracts['veCurveVault'].methods['claim'].cacheSend({from: this.activeAccount})
@@ -162,6 +171,9 @@ export default {
     zap() {
       return this.drizzleInstance.contracts['CurveBackzapper'].address
     },
+    y3crv_zap() {
+      return this.drizzleInstance.contracts['y3CrvZapper'].address
+    },
     voter() {
       return this.drizzleInstance.contracts['CurveYCRVVoter'].address
     },
@@ -197,6 +209,9 @@ export default {
     },
     has_allowance_zap() {
       return !this.call('CRV', 'allowance', [this.activeAccount, this.zap]).isZero()
+    },
+    has_allowance_y3crv_zap() {
+      return !this.call('3CRV', 'allowance', [this.activeAccount, this.zap]).isZero()
     },
     need_minter() {
       return this.user_gauges.filter(gauge => gauge !== ZERO_ADDRESS).length > 0

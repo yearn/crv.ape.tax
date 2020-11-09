@@ -5,6 +5,7 @@ import CurveVesting from './abi/CurveVesting.json'
 import CurveYCRVVoter from './abi/CurveYCRVVoter.json'
 import StrategyProxy from './abi/StrategyProxy.json'
 import CurveBackzapper from './abi/CurveBackzapper.json'
+import y3CrvZapper from './abi/y3CrvZapper.json'
 import CurveRegistry from './abi/CurveRegistry.json'
 import CurveMinter from './abi/CurveMinter.json'
 
@@ -26,6 +27,10 @@ const options = {
       web3Contract: new web3.eth.Contract(ERC20, "0xD533a949740bb3306d119CC777fa900bA034cd52")
     },
     {
+      contractName: '3CRV',
+      web3Contract: new web3.eth.Contract(ERC20, "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490")
+    },
+    {
       contractName: 'CurveVotingEscrow',
       web3Contract: new web3.eth.Contract(CurveVotingEscrow, "0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2")
     },
@@ -44,6 +49,10 @@ const options = {
     {
       contractName: 'CurveBackzapper',
       web3Contract: new web3.eth.Contract(CurveBackzapper, "0x5249dD8DB02EeFB08600C4A70110B0f6B9CDA3cA")
+    },
+    {
+      contractName: 'y3CrvZapper',
+      web3Contract: new web3.eth.Contract(y3CrvZapper, "0xc8Bd224A588cd2485EAeCc3a7b3d168A5d0217D8")
     },
     {
       contractName: 'CurveRegistry',
