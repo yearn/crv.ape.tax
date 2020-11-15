@@ -51,12 +51,17 @@
         div
           a(href='https://github.com/banteg/ape-tax', target='_blank') source code
           span , 
-          a(href='#', @click.prevent='on_add_token') add token
+          a(href='#', @click.prevent='on_add_token') add to metamask
+          span , 🦄 
+          a(:href='`https://app.uniswap.org/#/swap?inputCurrency=${vault}&outputCurrency=${crv}`', target='_blank') trade yvecrv/crv
+          span , 
+          a(:href='`https://app.uniswap.org/#/add/${vault}/${crv}`', target='_blank') add liquidity
+
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import ethers, { BigNumber } from 'ethers'
+import ethers from 'ethers'
 import CurveGauge from './abi/CurveGauge.json'
 const max_uint = new ethers.BigNumber.from(2).pow(256).sub(1).toString()
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -109,7 +114,7 @@ export default {
       this.drizzleInstance.contracts['veCurveVault'].methods['claim'].cacheSend({from: this.activeAccount})
     },
     on_add_token() {
-      ethereum.request({
+      window.ethereum.request({
         method: 'wallet_watchAsset',
             params: {
               'type': 'ERC20',
@@ -182,6 +187,9 @@ export default {
     },
     vault() {
       return this.drizzleInstance.contracts['veCurveVault'].address
+    },
+    crv() {
+      return this.drizzleInstance.contracts['CRV'].address
     },
     zap() {
       return this.drizzleInstance.contracts['CurveBackzapper'].address
