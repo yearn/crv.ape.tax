@@ -49,13 +49,9 @@ def gauges(interface, user):
     pools = [registry.pool_list(i) for i in range(registry.pool_count())]
     gauges = set(chain.from_iterable([registry.get_gauges(pool)[0] for pool in pools]))
     gauges.discard(ZERO_ADDRESS)
-    user_gauges = [
-        gauge
-        for gauge in gauges
-        if interface.CurveGauge(gauge).claimable_tokens.call(user) > 0
-    ]
-    user_gauges += [ZERO_ADDRESS for _ in range(20 - len(user_gauges))]
-    return user_gauges[:20]
+    gauges = [interface.CurveGauge(g) for g in gauges]
+    gauges += [ZERO_ADDRESS for _ in range(20 - len(gauges))]
+    return gauges[:20]
 
 
 @pytest.fixture
