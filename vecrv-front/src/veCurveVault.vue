@@ -26,7 +26,7 @@
       p.muted deposit CRV from wallet into yveCRV vault
       button(:disabled='has_allowance_vault', @click.prevent='on_approve_vault') {{ has_allowance_vault ? 'vault approved' : 'approve vault' }}
       button(:disabled='!has_allowance_vault', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
-      button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} rewards
+      button(@click.prevent='on_claim') claim rewards
     p.row
       p.muted deposit CRV from wallet, vesting and gauges into yveCRV vault
       button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'CRV zap approved' : 'approve CRV zap' }}
