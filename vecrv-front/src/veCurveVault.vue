@@ -11,8 +11,6 @@
       div vested balance: {{ vested_balance | fromWei(2) }} CRV
       div gauges claimable: {{ gauge_balance | fromWei(2) }} CRV
       div vault balance: {{ vault_balance | fromWei(2) }} yveCRV
-      div claimable: {{ claimable | fromWei(2) }} 3Crv
-      //- div allowance: {{ crv_allowance | fromWei(2) }} CRV
     p
       div 🧮 vault
       div vault vs solo: {{ (yearn_vecrv / vault_supply).toFixed(3) }}x
