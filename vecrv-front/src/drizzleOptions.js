@@ -8,6 +8,7 @@ import CurveBackzapper from './abi/CurveBackzapper.json'
 import y3CrvZapper from './abi/y3CrvZapper.json'
 import CurveRegistry from './abi/CurveRegistry.json'
 import CurveMinter from './abi/CurveMinter.json'
+import CurveRewardDistribution from './abi/CurveRewardDistribution.json'
 
 import Web3 from 'web3'
 let web3 = new Web3(Web3.givenProvider);
@@ -61,6 +62,10 @@ const options = {
     {
       contractName: 'CurveMinter',
       web3Contract: new web3.eth.Contract(CurveMinter, "0xd061D61a4d941c39E5453435B6345Dc261C2fcE0")
+    },
+    {
+      contractName: 'CurveRewardDistribution',
+      web3Contract: new web3.eth.Contract(CurveRewardDistribution, "0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc")
     },
   ],
   events: {

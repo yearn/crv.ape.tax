@@ -16,7 +16,8 @@
     p
       div 🧮 vault
       div vault vs solo: {{ (yearn_vecrv / vault_supply).toFixed(3) }}x
-      div rewards in vault: {{ vault_rewards | fromWei(2) }} 3Crv
+      div rewards in vault: {{ vault_rewards | fromWei(2) }} 3CRV
+      div epochs claimed: {{ epochs_claimed }}/{{ epochs_total }}
       div total supply: {{ vault_supply | fromWei(2) }} yveCRV ({{ vault_supply / total_vecrv | toPct(3) }} of total)
       div yearn vecrv: {{ yearn_vecrv | fromWei(2) }} veCRV ({{ yearn_vecrv / total_vecrv | toPct(3) }} of total)
       div total vecrv: {{ total_vecrv | fromWei(2) }} veCRV
@@ -236,6 +237,12 @@ export default {
     },
     vault_rewards() {
       return this.call('3CRV', 'balanceOf', [this.vault])
+    },
+    epochs_claimed() {
+      return this.call('CurveRewardDistribution', 'user_epoch_of', [this.voter])
+    },
+    epochs_total() {
+      return this.call('CurveVotingEscrow', 'user_point_epoch', [this.voter])
     },
     has_allowance_vault() {
       return !this.call('CRV', 'allowance', [this.activeAccount, this.vault]).isZero()
