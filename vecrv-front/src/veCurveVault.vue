@@ -11,10 +11,11 @@
       div vested balance: {{ vested_balance | fromWei(2) }} CRV
       div gauges claimable: {{ gauge_balance | fromWei(2) }} CRV
       div vault balance: {{ vault_balance | fromWei(2) }} yveCRV
+      div claimable rewards: {{ claimable | fromWei(2) }} 3Crv
     p
       div 🧮 vault
       div vault vs solo: {{ (yearn_vecrv / vault_supply).toFixed(3) }}x
-      div rewards in vault: {{ vault_rewards | fromWei(2) }} 3CRV
+      div rewards in vault: {{ vault_rewards | fromWei(2) }} 3Crv
       div epochs claimed: {{ epochs_claimed }}/{{ epochs_total }}
       div total supply: {{ vault_supply | fromWei(2) }} yveCRV ({{ vault_supply / total_vecrv | toPct(3) }} of total)
       div yearn vecrv: {{ yearn_vecrv | fromWei(2) }} veCRV ({{ yearn_vecrv / total_vecrv | toPct(3) }} of total)
@@ -25,14 +26,14 @@
       p.muted deposit CRV from wallet into yveCRV vault
       button(:disabled='has_allowance_vault', @click.prevent='on_approve_vault') {{ has_allowance_vault ? 'vault approved' : 'approve vault' }}
       button(:disabled='!has_allowance_vault', @click.prevent='on_deposit') deposit {{ crv_balance | fromWei(2) }} CRV
-      button(@click.prevent='on_claim') claim rewards
+      button(@click.prevent='on_claim') claim {{ claimable | fromWei(2) }} 3Crv
     p.row
       p.muted deposit CRV from wallet, vesting and gauges into yveCRV vault
       button(:disabled='has_allowance_zap', @click.prevent='on_approve_zap') {{ has_allowance_zap ? 'CRV zap approved' : 'approve CRV zap' }}
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
       button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
     p.row
-      p.muted deposit 3Crv from wallet and claimable rewards into y3Crv vault
+      p.muted deposit claimable rewards and 3Crv from wallet into y3Crv vault
       button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? '3Crv zap approved' : 'approve 3Crv zap' }}
       button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ three_crv_zappable | fromWei(2) }} 3Crv
     p.row
@@ -222,7 +223,10 @@ export default {
       return this.call('veCurveVault', 'balanceOf', [this.activeAccount])
     },
     claimable() {
-      return this.call('veCurveVault', 'claimable', [this.activeAccount])
+      const index = this.call('veCurveVault', 'index', [])
+      const supply_index = this.call('veCurveVault', 'supplyIndex', [this.activeAccount])
+      const ratio = new ethers.BigNumber.from(10).pow(18)
+      return (index.sub(supply_index)).mul(this.vault_balance).div(ratio)
     },
     three_crv_zappable() {
       return this.three_crv_balance.add(this.claimable)
