@@ -38,25 +38,25 @@
       button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ three_crv_zappable | fromWei(2) }} 3Crv
     p.row
       div.muted
-        div vault by 
+        div vault by
           a(href='https://twitter.com/andrecronjetech', target='_blank') andre
-          span , ui by 
+          span , ui by
           a(href='https://twitter.com/bantg', target='_blank') banteg
           span , zaps by banteg and kx9x
         div
           a(:href='`https://etherscan.io/address/${vault}/#code`', target='_blank') vault contract
-          span , 
+          span ,
           a(:href='"https://etherscan.io/address/" + zap + "/#code"', target='_blank') zap deposit contract
-          span , 
+          span ,
           a(:href='"https://etherscan.io/address/" + y3crv_zap + "/#code"', target='_blank') zap rewards contract
         div
           a(href='https://github.com/banteg/ape-tax', target='_blank') source code
-          span , 
+          span ,
           a(href='#', @click.prevent='on_add_token') add to metamask
-          span , 🦄 
-          a(:href='`https://app.uniswap.org/#/swap?inputCurrency=${vault}&outputCurrency=${crv}`', target='_blank') trade yvecrv/crv
-          span , 
-          a(:href='`https://app.uniswap.org/#/add/${vault}/${crv}`', target='_blank') add liquidity
+          span , 🍣
+          a(:href='`https://sushiswap.fi/token/${vault}`', target='_blank') trade yvecrv/crv
+          span ,
+          a(:href='`https://sushiswap.fi/pair/0x2a579c0635a9c7e49a9310dd57eeb79c4a8e47ee`', target='_blank') add liquidity
 
 </template>
 
@@ -163,7 +163,7 @@ export default {
       let key = this.drizzleInstance.contracts[contract].methods[method].cacheCall(...args)
       let value
       try {
-        value = this.contractInstances[contract][method][key].value 
+        value = this.contractInstances[contract][method][key].value
       } catch (error) {
         value = null
       }
