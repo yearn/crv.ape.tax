@@ -9,6 +9,7 @@ import y3CrvZapper from './abi/y3CrvZapper.json'
 import CurveRegistry from './abi/CurveRegistry.json'
 import CurveMinter from './abi/CurveMinter.json'
 import CurveRewardDistribution from './abi/CurveRewardDistribution.json'
+import CurveSwap from './abi/CurveSwap.json'
 
 import Web3 from 'web3'
 let web3 = new Web3(Web3.givenProvider);
@@ -30,6 +31,10 @@ const options = {
     {
       contractName: '3CRV',
       web3Contract: new web3.eth.Contract(ERC20, "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490")
+    },
+    {
+      contractName: 'Curve3pool',
+      web3Contract: new web3.eth.Contract(CurveSwap, "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7")
     },
     {
       contractName: 'CurveVotingEscrow',
