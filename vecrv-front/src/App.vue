@@ -1,6 +1,6 @@
 <template lang="pug">
   div(v-if="isDrizzleInitialized", id="app")
-    .logo 🦍 🧮
+    .logo
     .section
       veCurveVault
   div(v-else)
@@ -24,7 +24,7 @@ export default {
 
 <style>
 #app {
-  font-family: Menlo, Comic Sans MS, monospace;
+  font-family: Menlo, monospace;
   max-width: 600px;
   margin: auto;
   -webkit-font-smoothing: antialiased;
@@ -34,9 +34,12 @@ export default {
   margin-top: 60px;
 }
 .logo {
-  font-size: 32px;
-  margin-bottom: .8em;
-  font-family: sans-serif;
+  width: 64px;
+  height: 64px;
+  display: block;
+  background: url(assets/logo.svg);
+  background-repeat: no-repeat;
+  background-size: 64px;
 }
 h2 {
   font-weight: normal;

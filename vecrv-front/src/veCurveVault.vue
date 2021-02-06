@@ -1,10 +1,13 @@
 <template lang="pug">
   div(v-if="isDrizzleInitialized")
     p
-      h2 veCRV "Backscratcher" Vault
+      h2 Yearn veCRV "Backscratcher" Vault
+      p
+        span.green Earn <strong>{{ yearn_vecrv / vault_supply - 1 | toPct(1) }}</strong> more weekly rewards staking with Yearn.
       p This vault accepts CRV in exchange for perpetual claim on Curve DAO admin fees across all Yearn products.
       p Since it locks CRV in Curve Voting Escrow for 4 years and regularly prolongs the lock, this vault doesn't have withdrawal functionality.
-      p <strong>You will NOT get your CRV back. Ever.</strong>
+      p
+        span.green 🍣 Stake <a href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991">Sushiswap LP</a> on <a href="https://sushiswap.fi/farms/special">Onsen menu</a> for more rewards.
     p
       div 🦍 user
       div wallet balance: {{ crv_balance | fromWei(2) }} CRV
@@ -14,6 +17,8 @@
       div claimable rewards: {{ claimable | fromWei(2) }} 3Crv
     p
       div 🧮 vault
+      div curve apy: {{ vault_apy / (yearn_vecrv / vault_supply) | toPct(3) }}
+      div vault apy: {{ vault_apy | toPct(3) }}
       div vault vs solo: {{ (yearn_vecrv / vault_supply).toFixed(3) }}x
       div rewards in vault: {{ vault_rewards | fromWei(2) }} 3Crv
       div epochs claimed: {{ epochs_claimed }}/{{ epochs_total }}
@@ -33,7 +38,7 @@
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
       button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
     p.row
-      p.muted deposit claimable rewards and 3Crv from wallet into y3Crv vault
+      p.muted claim rewards and deposit them into y3Crv vault
       button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? '3Crv zap approved' : 'approve 3Crv zap' }}
       button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ three_crv_zappable | fromWei(2) }} 3Crv
     p.row
@@ -53,10 +58,7 @@
           a(href='https://github.com/banteg/ape-tax', target='_blank') source code
           span , 
           a(href='#', @click.prevent='on_add_token') add to metamask
-          span , 🦄 
-          a(:href='`https://app.uniswap.org/#/swap?inputCurrency=${vault}&outputCurrency=${crv}`', target='_blank') trade yvecrv/crv
-          span , 
-          a(:href='`https://app.uniswap.org/#/add/${vault}/${crv}`', target='_blank') add liquidity
+          span
 
 </template>
 
@@ -74,6 +76,7 @@ export default {
       user_gauges: [],
       gauge_balance: 0,
       username: null,
+      crv_price: 0,
     }
   },
   filters: {
@@ -159,6 +162,12 @@ export default {
       return new ethers.BigNumber.from(balance)
     },
 
+    async load_crv_price() {
+      const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=curve-dao-token&vs_currencies=usd')
+      const data = await resp.json()
+      this.crv_price = data['curve-dao-token']['usd']
+    },
+
     call(contract, method, args, out='number') {
       let key = this.drizzleInstance.contracts[contract].methods[method].cacheCall(...args)
       let value
@@ -228,6 +237,13 @@ export default {
       const ratio = new ethers.BigNumber.from(10).pow(18)
       return (index.sub(supply_index)).mul(this.vault_balance).div(ratio)
     },
+    vault_apy() {
+      const week = 7 * 86400
+      const epoch = Math.floor(Date.now() / 1000 / week) * week - week
+      const tokens_per_week = this.call('CurveRewardDistribution', 'tokens_per_week', [epoch]) / 1e18
+      const virtual_price = this.call('Curve3pool', 'get_virtual_price', []) / 1e18
+      return (tokens_per_week * virtual_price * 52) / (this.total_vecrv / 1e18 * this.crv_price) * (this.yearn_vecrv / this.vault_supply)
+    },
     three_crv_zappable() {
       return this.three_crv_balance.add(this.claimable)
     },
@@ -265,6 +281,7 @@ export default {
   created() {
     this.load_user_gauges()
     this.load_reverse_ens()
+    this.load_crv_price()
   }
 }
 </script>
@@ -277,7 +294,11 @@ button {
   color: gray;
   font-size: 0.8em;
 }
+.green {
+  background-color: #94FF63;
+  box-shadow: 0 0 8px 6px #94FF63;
+}
 a, a:visited, a:hover {
-  color: gray;
+  color: black;
 }
 </style>
