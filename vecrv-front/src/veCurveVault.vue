@@ -3,11 +3,13 @@
     p
       h2 Yearn veCRV "Backscratcher" Vault
       p
-        span.green Earn <strong>{{ yearn_vecrv / vault_supply - 1 | toPct(1) }}</strong> more weekly rewards staking with Yearn.
+        div.green Earn <strong>{{ yearn_vecrv / vault_supply - 1 | toPct(1) }}</strong> more weekly rewards staking with Yearn.
       p This vault accepts CRV in exchange for perpetual claim on Curve DAO admin fees across all Yearn products.
       p Since it locks CRV in Curve Voting Escrow for 4 years and regularly prolongs the lock, this vault doesn't have withdrawal functionality.
       p
-        span.green 🍣 Stake <a href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991">Sushiswap LP</a> on <a href="https://sushiswap.fi/farms/special">Onsen menu</a> for more rewards.
+        div.green
+          div 🍣 Stake <a href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991">Sushiswap LP</a> on <a href="https://sushiswap.fi/farms/special">Onsen menu</a> for more rewards.
+          div 🥒 Stake LP in <a href="https://app.pickle.finance/jars">Pickle Jar</a> for Sushi + Pickle rewards.
     p
       div 🦍 user
       div wallet balance: {{ crv_balance | fromWei(2) }} CRV
@@ -297,6 +299,7 @@ button {
 .green {
   background-color: #94FF63;
   box-shadow: 0 0 8px 6px #94FF63;
+  display: inline-block;
 }
 a, a:visited, a:hover {
   color: black;
