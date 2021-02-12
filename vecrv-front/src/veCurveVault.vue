@@ -3,7 +3,7 @@
     p
       h2 Yearn veCRV "Backscratcher" Vault
       p
-        div.green Earn <strong>{{ yearn_vecrv / vault_supply - 1 | toPct(1) }}</strong> more weekly rewards staking with Yearn.
+        div.green Earn <strong>{{ vault_boost - 1 | toPct(1) }}</strong> more weekly rewards staking with Yearn.
       p This vault accepts CRV in exchange for perpetual claim on Curve DAO admin fees across all Yearn products.
       p Since it locks CRV in Curve Voting Escrow for 4 years and regularly prolongs the lock, this vault doesn't have withdrawal functionality.
       p
@@ -19,9 +19,9 @@
       div claimable rewards: {{ claimable | fromWei(2) }} 3Crv
     p
       div 🧮 vault
-      div curve apy: {{ vault_apy / (yearn_vecrv / vault_supply) | toPct(3) }}
-      div vault apy: {{ vault_apy | toPct(3) }}
-      div vault vs solo: {{ (yearn_vecrv / vault_supply).toFixed(3) }}x
+      div curve apy: {{ vault_apy | toPct(2) }}
+      div vault apy: {{ vault_apy * vault_boost | toPct(2) }}
+      div vault vs solo: {{ vault_boost.toFixed(2) }}x
       div rewards in vault: {{ vault_rewards | fromWei(2) }} 3Crv
       div epochs claimed: {{ epochs_claimed }}/{{ epochs_total }}
       div total supply: {{ vault_supply | fromWei(2) }} yveCRV ({{ vault_supply / total_vecrv | toPct(3) }} of total)
@@ -79,6 +79,7 @@ export default {
       gauge_balance: 0,
       username: null,
       crv_price: 0,
+      yvecrv_price: 0,
     }
   },
   filters: {
@@ -165,9 +166,10 @@ export default {
     },
 
     async load_crv_price() {
-      const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=curve-dao-token&vs_currencies=usd')
+      const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=curve-dao-token,vecrv-dao-yvault&vs_currencies=usd')
       const data = await resp.json()
       this.crv_price = data['curve-dao-token']['usd']
+      this.yvecrv_price = data['vecrv-dao-yvault']['usd']
     },
 
     call(contract, method, args, out='number') {
@@ -244,7 +246,10 @@ export default {
       const epoch = Math.floor(Date.now() / 1000 / week) * week - week
       const tokens_per_week = this.call('CurveRewardDistribution', 'tokens_per_week', [epoch]) / 1e18
       const virtual_price = this.call('Curve3pool', 'get_virtual_price', []) / 1e18
-      return (tokens_per_week * virtual_price * 52) / (this.total_vecrv / 1e18 * this.crv_price) * (this.yearn_vecrv / this.vault_supply)
+      return (tokens_per_week * virtual_price * 52) / (this.total_vecrv / 1e18 * this.crv_price)
+    },
+    vault_boost()  {
+      return (this.yearn_vecrv / this.vault_supply) * (this.crv_price / this.yvecrv_price)
     },
     three_crv_zappable() {
       return this.three_crv_balance.add(this.claimable)
