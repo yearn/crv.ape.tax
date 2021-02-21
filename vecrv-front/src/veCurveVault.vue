@@ -236,10 +236,11 @@ export default {
       return this.call('veCurveVault', 'balanceOf', [this.activeAccount])
     },
     claimable() {
+      const cached = this.call('veCurveVault', 'claimable', [this.activeAccount])
       const index = this.call('veCurveVault', 'index', [])
       const supply_index = this.call('veCurveVault', 'supplyIndex', [this.activeAccount])
       const ratio = new ethers.BigNumber.from(10).pow(18)
-      return (index.sub(supply_index)).mul(this.vault_balance).div(ratio)
+      return (index.sub(supply_index)).mul(this.vault_balance).div(ratio).add(cached)
     },
     vault_apy() {
       const week = 7 * 86400
