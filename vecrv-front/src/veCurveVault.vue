@@ -40,10 +40,6 @@
       button(:disabled='minting_allowed', @click.prevent='on_approve_minter') {{ minting_allowed ? 'minter approved' : 'approve minter' }}
       button(:disabled='!has_allowance_zap || (need_minter && !minting_allowed)', @click.prevent='on_zap') zap {{ zap_balance | fromWei(2) }} CRV
     p.row
-      p.muted claim rewards and deposit them into y3Crv vault
-      button(:disabled='has_allowance_y3crv_zap', @click.prevent='on_approve_y3crv_zap') {{ has_allowance_y3crv_zap ? '3Crv zap approved' : 'approve 3Crv zap' }}
-      button(:disabled='!has_allowance_y3crv_zap', @click.prevent='on_y3crv_zap') zap {{ three_crv_zappable | fromWei(2) }} 3Crv
-    p.row
       div.muted
         div vault by 
           a(href='https://twitter.com/andrecronjetech', target='_blank') andre
