@@ -8,7 +8,7 @@
       p Since it locks CRV in Curve Voting Escrow for 4 years and regularly prolongs the lock, this vault doesn't have withdrawal functionality.
       p
         div.green
-          div 🍣 Stake <a href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991">Sushiswap LP</a> on <a href="https://sushiswap.fi/farms/special">Onsen menu</a> for more rewards.
+          div 🍣 Stake <a href="https://analytics.sushi.com/pairs/0x10b47177e92ef9d5c6059055d92ddf6290848991">Sushiswap LP</a> on <a href="https://app.sushi.com/farm">Onsen menu</a> for more rewards.
           div 🥒 Stake LP in <a href="https://app.pickle.finance/jars">Pickle Jar</a> for Sushi + Pickle rewards.
     p
       div 🦍 user
